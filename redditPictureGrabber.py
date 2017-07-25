@@ -11,6 +11,9 @@ def get_path():
 
 
 def picture_grabber(destination_path, subreddit, sleep_time=1740):
+    # checks to see whether a file called iteration exists, and then reads from
+    # it if it does. if it does not, it is created and instantiated with the
+    # number 1.
     try:
         myfile = open('iteration', 'r+')
         num_str = myfile.read()
@@ -22,11 +25,12 @@ def picture_grabber(destination_path, subreddit, sleep_time=1740):
     while True:
         myfile.close()
         print("Current iteration is: " + str(num))
-        # if num is 0, delete everything inside folder
+        # checks if num == 0, if it does, it purges the folder
         if num == 0:
             shutil.rmtree(destination_path)
+        # runs redditdl.py through subprocess
         if sys.platform == "darwin" or sys.platform == "linux" or \
-        sys.playform == "linux2" or sys.platform == "cygwin":
+        sys.platform == "linux2" or sys.platform == "cygwin":
             subprocess.Popen(["python", get_path() + "/redditdl.py", subreddit,
                              destination_path, "--sort-type", "topday", "--num",
                              "1", "--skipAlbums"])
@@ -34,8 +38,11 @@ def picture_grabber(destination_path, subreddit, sleep_time=1740):
             subprocess.Popen(["python", get_path() + "\\redditdl.py", subreddit,
                              destination_path, "--sort-type", "topday", "--num",
                              "1", "--skipAlbums"])            
+        # sleeps for 29 minutes
+        # TODO: allow user to specify sleep time
         time.sleep(sleep_time)
-        # incrementing and modulo
+        # increments num by 1 and takes the remainder of it, then writes that
+        # number to iteration
         num += 1
         num %= 48
         myfile = open('iteration', 'r+')
@@ -43,6 +50,8 @@ def picture_grabber(destination_path, subreddit, sleep_time=1740):
 
 
 def main():
+    """runs when the user executes the program"""
+    # checks to make sure the argument list is exactly 3
     if len(sys.argv) != 3:
         print("USAGE: redditPictureGrabber.py destination_path subreddit")
         quit()
