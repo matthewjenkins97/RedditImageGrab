@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 import os
-import shutil
+import sys
 import time
+import shutil
+import subprocess
+
+def get_path():
+    return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 
-def main():
+def win_picture_grabber(destination_path, subreddit):
+    pass
+
+
+def mac_picture_grabber(destination_path, subreddit):
     myfile = open('iteration', 'r+')
     numStr = myfile.read()
     num = int(numStr)
@@ -13,9 +22,9 @@ def main():
         print("Current iteration is: " + str(num))
         # if num is 0, delete everything inside folder
         if num == 0:
-            shutil.rmtree("/Users/z0diakos/Pictures/Wallpapers/")
+            shutil.rmtree(destination_path)
 
-        os.system('python ~/Developer/Miscellaneous\ Repositories/RedditImageGrab/redditdl.py --sort-type topday --num 1 --update --sfw --skipAlbums EarthPorn /Users/z0diakos/Pictures/Wallpapers/')
+        subprocess.Popen(["python", get_path() + "/redditdl.py", "--sort-type today", "--num 1", "update", "--sfw", "--skipAlbums", subreddit, destination_path])
         time.sleep(1740)
 
         # incrementing and modulo
@@ -23,6 +32,32 @@ def main():
         num = num % 48
         myfile = open('iteration', 'r+')
         myfile.write(str(num))
+
+
+def main():
+    if len(sys.argv) != 3:
+        print("USAGE: redditPictureGrabber.py destination_path subreddit")
+    else:
+        # dump argv into variables
+        destination_path = sys.argv[1]
+        subreddit = sys.argv[2]
+
+        # checks if destination_path exists. if it does not, it quits.
+        if os.path.exists(destination_path):
+            # checking what OS is running and execute a function based off the
+            # result
+            if sys.platform == "darwin":
+                mac_picture_grabber(destination_path, subreddit)
+            elif sys.platform == "win32":
+                win_picture_grabber(destination_path, subreddit)
+            else:
+                print("Currently only macOS and Windows are supported.")
+                print("The program will now exit.")
+                quit()
+        else:
+            print("The destination you provided does not exist.")
+            print("The program will now exit.")
+            quit()
 
 
 main()
