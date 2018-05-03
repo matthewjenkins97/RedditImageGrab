@@ -1,6 +1,39 @@
 [![Build Status](https://travis-ci.org/HoverHell/RedditImageGrab.svg?branch=master)](https://travis-ci.org/HoverHell/RedditImageGrab)
 
-# RedditImageGrab
+# Modifications by matthewjenkins97
+
+I wrote a shell script which is basically a wrapper class for the redditdl.py 
+function. It takes for its parameters a destination folder and a subreddit. 
+
+## Usage:
+    ./reddit_picture_grabber.py destination_path subreddit [sleep_time]
+
+(Note: sleep_time is measured in seconds.)
+
+## Requirements: 
+ * Python 2
+ * bs4 (installed with Python 2's version of pip)
+
+## How it works
+When launched for the first time, a file called .iteration is made in the same 
+directory as the redditPictureGrabber.py file. This is used to keep track of 
+how many times a picture has been successfully downloaded by the program. By 
+default, each picture is downloaded every 29 minutes (because if it were 
+downloaded every 30 minutes, any wallpaper switching algorithms wouldn't 
+notice the new wallpaper). If the program is stopped mid execution, the 
+.iteration file keeps track of the number of downloaded pictures. After 
+48 pictures have been downloaded, the destination folder is deleted to save 
+space, but when a picture is downloaded again, the destination file is 
+recreated (this was HoverHell's choice, not mine).
+
+My intent for this program was to have it be a cross-platform rotating 
+wallpaper downloader, which is why I implemented things the way I did. 
+If you want to modify my stuff to better suit your needs, feel free to 
+fork this repository and modify it! :)
+
+# Original Documentation by HoverHell
+
+## RedditImageGrab
 
 I created this script to download the latest (and greatest) wallpapers
 off of image subreddits like wallpaper to keep my desktop wallpaper
@@ -9,14 +42,14 @@ any JPEG or PNG formatted image that it found listed in the specified
 subreddit and download them to a folder.
 
 
-# Requirements:
+## Requirements:
 
  * Python 2 (Python3 might be supported over 2to3, but see for
    yourself and report back).
  * Optional requirements: listed in setup.py under extras_require.
 
 
-# Usage:
+## Usage:
 
 See `./redditdl.py --help` for uptodate details.
 
@@ -59,7 +92,7 @@ optional arguments:
     --sort-type         Sort the subreddit.
 
 
-# Examples
+## Examples
 
 An example of running this script to download images with a score
 greater than 50 from the wallpaper sub-reddit into a folder called
@@ -78,7 +111,7 @@ doesn't exist yet) run:
     python redditdl.py cats ~/Pictures/catsfolder --score 1000 --num 5 --sfw --verbose
 
 
-## Advanced Examples
+### Advanced Examples
 
 Retrieve last 10 pics in the 'wallpaper' subreddit with the word
 "sunset" in the title (note: case is ignored by (?i) predicate)
@@ -90,7 +123,7 @@ Download top week post from subreddit 'animegifs' and use gfycat gif mirror (if 
 	python redditdl.py animegifs --sort-type topweek --mirror-gfycat
 
 
-## Sorting
+### Sorting
 
 Available sorting are following : hot, new, rising, controversial, top, gilded
 
@@ -98,34 +131,3 @@ Available sorting are following : hot, new, rising, controversial, top, gilded
 time limit extension (hour, day, week, month, year, all).
 
 example : tophour, topweek, topweek, controversialhour, controversialweek etc
-
-
-## Modifications by matthewjenkins97
-
-I wrote a shell script which is basically a wrapper class for the redditdl.py 
-function. It takes for its parameters a destination folder and a subreddit. 
-
-Usage:
-    ./reddit_picture_grabber.py destination_path subreddit [sleep_time]
-
-(Note: sleep_time is measured in seconds.)
-
-Requirements: 
-    * Python 2
-    * bs4 (installed with Python 2's version of pip)
-
-When launched for the first time, a file called .iteration is made in the same 
-directory as the redditPictureGrabber.py file. This is used to keep track of 
-how many times a picture has been successfully downloaded by the program. By 
-default, each picture is downloaded every 29 minutes (because if it were 
-downloaded every 30 minutes, any wallpaper switching algorithms wouldn't 
-notice the new wallpaper). If the program is stopped mid execution, the 
-.iteration file keeps track of the number of downloaded pictures. After 
-48 pictures have been downloaded, the destination folder is deleted to save 
-space, but when a picture is downloaded again, the destination file is 
-recreated (this was HoverHell's choice, not mine).
-
-My intent for this program was to have it be a cross-platform rotating 
-wallpaper downloader, which is why I implemented things the way I did. 
-If you want to modify my stuff to better suit your needs, feel free to 
-fork this repository and modify it! :)
