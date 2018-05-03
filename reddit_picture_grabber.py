@@ -1,8 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+
 import os
 import sys
 import time
 import shutil
+import re
 import subprocess
 
 
@@ -15,11 +17,11 @@ def picture_grabber(destination_path, subreddit, sleep_time=1740):
     # it if it does. if it does not, it is created and instantiated with the
     # number 1.
     try:
-        myfile = open('iteration', 'r+')
+        myfile = open('.iteration', 'r+')
         num_str = myfile.read()
         num = int(num_str)
     except IOError:
-        myfile = open('iteration', 'w+')
+        myfile = open('.iteration', 'w+')
         myfile.write("1")
         num = 1
     while True:
@@ -45,29 +47,40 @@ def picture_grabber(destination_path, subreddit, sleep_time=1740):
         # number to iteration
         num += 1
         num %= 48
-        myfile = open('iteration', 'r+')
+        myfile = open('.iteration', 'r+')
         myfile.write(str(num))
 
 
 def main():
     """runs when the user executes the program"""
-    # checks to make sure the argument list is exactly 3
-    if len(sys.argv) != 3:
-        print("USAGE: redditPictureGrabber.py destination_path subreddit")
-        quit()
-    else:
+    # checks to make sure the argument list is 3 or 4 (contains sleep time)
+    if len(sys.argv) == 3:
         # dump argv into variables
         destination_path = sys.argv[1]
         subreddit = sys.argv[2]
-        # checks if destination_path exists. if it does not, it quits because
-        # i'd rather not create any weird folders if the user types something
-        # wrong.
+        # checks if destination_path exists. if it does not, create the folder.
         if os.path.exists(destination_path):
             picture_grabber(destination_path, subreddit)
         else:
-            print("The destination you provided does not exist.")
-            print("The program will now exit.")
-            quit()
-
+            os.makedirs(destination_path)
+            picture_grabber(destination_path, subreddit)
+    elif len(sys.argv) == 4:
+        # dump argv into variables
+        destination_path = sys.argv[1]
+        subreddit = sys.argv[2]
+        sleep_time = sys.argv[3]
+        # checking if sleeptime is an float 
+        # (has to be otherwise exceptions will occur inside the picture_grabber)
+        assert re.match("\d+", sleep_time), "ERROR: sleep_time is not a number."
+        sleep_time = int(sleep_time)
+        # checks if destination_path exists. if it does not, create the folder.
+        if os.path.exists(destination_path):
+            picture_grabber(destination_path, subreddit, sleep_time)
+        else:
+            os.makedirs(destination_path)
+            picture_grabber(destination_path, subreddit, sleep_time)
+    else:
+        print("USAGE: redditPictureGrabber.py destination_path subreddit [sleep_time]")
+        quit()
 
 main()
